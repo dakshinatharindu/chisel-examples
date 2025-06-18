@@ -21,11 +21,9 @@ RUN cd verilator && \
 # Set environment variables for Verilator
 ENV PATH="/opt/verilator/bin:${PATH}"
 
-# Create a new user with a home directory and set a default shell
-RUN useradd -m -s /bin/bash vscode
 # Give the new user sudo privileges
-RUN echo 'vscode ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+RUN echo 'ubuntu ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 # Set the working directory for the user
-WORKDIR /home/vscode
+WORKDIR /home/ubuntu
 # Set the default command to bash (this can be modified as needed)
 CMD ["/bin/bash"]
