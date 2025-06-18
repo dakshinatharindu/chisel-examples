@@ -1,0 +1,31 @@
+FROM eclipse-temurin:24-jre-noble
+
+ENV SBT_VERSION=1.10.11
+RUN apt-get update && apt-get install -y sudo curl unzip build-essential && \
+    curl -L -o sbt-$SBT_VERSION.zip https://github.com/sbt/sbt/releases/download/v$SBT_VERSION/sbt-$SBT_VERSION.zip && \
+    unzip sbt-$SBT_VERSION.zip -d /opt
+
+ENV PATH="/opt/sbt/bin/:${PATH}"
+
+# Install Verilator
+RUN apt-get install -y git help2man perl python3 make libfl2 libfl-dev zlib1g zlib1g-dev ccache \
+    mold libgoogle-perftools-dev numactl perl-doc git autoconf flex bison
+
+RUN git clone https://github.com/verilator/verilator
+RUN cd verilator && \
+    git checkout stable && \
+    autoconf && \
+    ./configure --prefix=/opt/verilator && \
+    make -j$(nproc) && \
+    make install
+# Set environment variables for Verilator
+ENV PATH="/opt/verilator/bin:${PATH}"
+
+# Create a new user with a home directory and set a default shell
+RUN useradd -m -s /bin/bash vscode
+# Give the new user sudo privileges
+RUN echo 'vscode ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+# Set the working directory for the user
+WORKDIR /home/vscode
+# Set the default command to bash (this can be modified as needed)
+CMD ["/bin/bash"]
