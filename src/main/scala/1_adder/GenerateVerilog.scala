@@ -11,7 +11,7 @@ object GenerateVerilog extends App {
   if (!dir.exists()) dir.mkdirs()
   
   val verilog = ChiselStage.emitSystemVerilog(new Adder(8))
-  val verilogFile = new File(s"$targetDir/Adder.v")
+  val verilogFile = new File(s"$targetDir/Adder.sv")
   val writer = new FileWriter(verilogFile)
   writer.write(verilog)
   writer.close()
